@@ -1,0 +1,43 @@
+{
+  "name": "israel-alerts-updater",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Updates the historical data of Israel's Home Front Command (פיקוד העורף) alerts",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "compile": "",
+    "prepublish": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dleshem/israel-alerts-updater"
+  },
+  "keywords": [
+    "israel",
+    "pikud haoref",
+    "alerts",
+    "alarms"
+  ],
+  "author": "Danny Leshem <dleshem@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dleshem/israel-alerts-updater/issues"
+  },
+  "homepage": "https://github.com/dleshem/israel-alerts-updater",
+  "devDependencies": {},
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@isomorphic-git/lightning-fs": "^4.6.0",
+    "csv": "^6.3.5",
+    "isomorphic-git": "^1.24.5",
+    "lodash": "^4.17.21",
+    "memfs": "^4.6.0",
+    "node-fetch": "^3.3.2",
+    "socks-proxy-agent": "^8.0.2"
+  },
+  "directories": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
