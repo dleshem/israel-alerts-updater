@@ -13,6 +13,10 @@ import http from 'isomorphic-git/http/node/index.js';
 
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN;
 const PROXY_URL = process.env.PROXY_URL;
+const author = {
+    name: 'Danny Leshem',
+    email: 'dleshem@gmail.com'
+};
 
 const israelAlertsCsvFilename = 'israel-alerts.csv';
 
@@ -47,10 +51,7 @@ const run = async () => {
                 fs,
                 http,
                 dir: israelAlertsDataGitDirectory,
-                author: {
-                    name: 'Danny Leshem',
-                    email: 'dleshem@gmail.com'
-                }
+                author
             });
         } catch (e) {
             fs.rmSync(israelAlertsDataGitDirectory, { recursive: true, force: true }); 
@@ -124,10 +125,7 @@ const run = async () => {
                 fs,
                 http,
                 dir: israelAlertsDataGitDirectory,
-                author: {
-                    name: 'Danny Leshem',
-                    email: 'dleshem@gmail.com'
-                },
+                author,
                 message: (numNewAlerts !== 1) ? `Added ${numNewAlerts} alerts` : 'Added 1 alert'
             });
 
