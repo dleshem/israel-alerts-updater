@@ -4,7 +4,7 @@ import fs from 'memfs';
 import _ from 'lodash';
 import { parse, stringify } from 'csv/sync';
 import fetch from 'node-fetch';
-import { SocksProxyAgent } from 'socks-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import path from 'path';
 import git from 'isomorphic-git';
@@ -33,7 +33,7 @@ const fetchAlerts = async ({fromDate = null, toDate = null}) => {
         toDateStr = s.substring(0, s.length - 5);
     }
     
-    const proxyAgent = new SocksProxyAgent(PROXY_URL);
+    const proxyAgent = new HttpsProxyAgent(PROXY_URL);
     const response = await fetch(`https://www.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=0&fromDate=${fromDateStr}&toDate=${toDateStr}`, {
         agent: proxyAgent
     });

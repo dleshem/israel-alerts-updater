@@ -30,11 +30,11 @@
     "@google-cloud/functions-framework": "^3.0.0",
     "@isomorphic-git/lightning-fs": "^4.6.0",
     "csv": "^6.3.5",
+    "https-proxy-agent": "^7.0.2",
     "isomorphic-git": "^1.24.5",
     "lodash": "^4.17.21",
     "memfs": "^4.6.0",
-    "node-fetch": "^3.3.2",
-    "socks-proxy-agent": "^8.0.2"
+    "node-fetch": "^3.3.2"
   },
   "directories": {},
   "publishConfig": {
