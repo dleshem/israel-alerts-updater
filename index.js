@@ -10,6 +10,7 @@ import path from 'path';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node/index.js';
 
+
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN;
 const PROXY_URL = process.env.PROXY_URL;
 const author = {
@@ -144,5 +145,3 @@ functions.http('helloHttp', async (req, res) => {
     await run();
     res.send(`Hello ${req.query.name || req.body.name || 'World'}!`);
 });
-
-await run();
