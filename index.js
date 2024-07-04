@@ -10,7 +10,6 @@ import path from 'path';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node/index.js';
 
-
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN;
 const PROXY_URL = process.env.PROXY_URL;
 const author = {
@@ -34,7 +33,7 @@ const fetchAlerts = async ({fromDate = null, toDate = null}) => {
     }
     
     const proxyAgent = new HttpsProxyAgent(PROXY_URL);
-    const response = await fetch(`https://www.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=0&fromDate=${fromDateStr}&toDate=${toDateStr}`, {
+    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=0&fromDate=${fromDateStr}&toDate=${toDateStr}`, {
         agent: proxyAgent
     });
     return await response.json();
@@ -145,3 +144,5 @@ functions.http('helloHttp', async (req, res) => {
     await run();
     res.send(`Hello ${req.query.name || req.body.name || 'World'}!`);
 });
+
+await run();
