@@ -143,5 +143,5 @@ const run = async () => {
 
 functions.http('helloHttp', async (req, res) => {
     await run();
-    res.send(`Hello ${req.query.name || req.body.name || 'World'}!`);
+    res.send('Hello world!');
 });
