@@ -8,7 +8,7 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import path from 'path';
 import git from 'isomorphic-git';
-import http from 'isomorphic-git/http/node/index.js';
+import http from 'isomorphic-git/http/node';
 
 
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN;
