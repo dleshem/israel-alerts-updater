@@ -34,7 +34,9 @@ const fetchAlerts = async ({fromDate = null, toDate = null}) => {
     }
     
     const proxyAgent = new HttpsProxyAgent(PROXY_URL);
-    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=0&fromDate=${fromDateStr}&toDate=${toDateStr}`, {
+    // Remote server returns Cache-Control: public, max-age=120
+    // We set a fictitious query parameter 't' to current timestamp to guarantee freshness (bust the cache)
+    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=0&fromDate=${fromDateStr}&toDate=${toDateStr}&t=${Date.now()}`, {
         agent: proxyAgent
     });
     return await response.json();
