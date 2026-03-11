@@ -10,6 +10,7 @@ import path from 'path';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
+import { fetchAlertsByRange, fetchAlertsLastMonth, getDistricts } from './Pakar.js';
 
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN;
 const PROXY_URL = process.env.PROXY_URL;
@@ -20,26 +21,40 @@ const author = {
 
 const israelAlertsCsvFilename = 'israel-alerts.csv';
 
-const fetchAlerts = async ({fromDate = null, toDate = null}) => {
-    let fromDateStr = '';
-    if (fromDate) {
-        const s = fromDate.toISOString();
-        fromDateStr = s.substring(0, s.length - 5);
+const fetchAllAlertsLastMonth = async (agent) => {
+    const districts = await getDistricts({
+        fetch,
+        agent,
+        lang: 'he'
+    });
+    console.log(`Districts: ${districts.length}`);
+
+    const alerts = [];
+    for (let i = 0; i < districts.length; ++i) {
+        const district = districts[i];
+    
+        try {
+            console.log(`Fetching alerts for ${district.label}`);
+            const districtAlerts = await fetchAlertsLastMonth({
+                fetch,
+                agent,
+                bustCache: true,
+                lang: 'he',
+                cities: [ district.label ]
+            });
+            _.each(districtAlerts, alert => {
+                delete alert['NAME_AR'];
+                delete alert['NAME_EN'];
+                delete alert['NAME_HE'];
+                delete alert['NAME_RU'];
+                alerts.push(alert);
+            });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
-    let toDateStr = '';
-    if (toDate) {
-        const s = toDate.toISOString();
-        toDateStr = s.substring(0, s.length - 5);
-    }
-    
-    const proxyAgent = new HttpsProxyAgent(PROXY_URL);
-    // Remote server returns Cache-Control: public, max-age=120
-    // We set a fictitious query parameter 't' to current timestamp to guarantee freshness (bust the cache)
-    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=0&fromDate=${fromDateStr}&toDate=${toDateStr}&t=${Date.now()}`, {
-        agent: proxyAgent
-    });
-    return await response.json();
+    return alerts;
 };
 
 const run = async () => {
@@ -92,7 +107,15 @@ const run = async () => {
         fromDate = new Date(lastAlertDate.getTime() + 1000);
     }
 
-    const latestAlerts = await fetchAlerts({ fromDate });
+    const agent = new HttpsProxyAgent(PROXY_URL);
+    const latestAlerts = await fetchAlertsByRange({
+        fetch,
+        agent,
+        bustCache: true,
+        lang: 'he',
+        fromDate
+    });
+    //const latestAlerts = await fetchAllAlertsLastMonth(agent);
     console.log(`Latest alerts: ${latestAlerts.length}`);
 
     if (latestAlerts.length > 0) {
