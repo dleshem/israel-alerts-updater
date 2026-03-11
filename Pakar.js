@@ -1,3 +1,11 @@
+const Modes = {
+    DateRange: 0,
+    LastDay: 1,
+    LastWeek: 2,
+    LastMonth: 3
+};
+
+
 const getAlarmsHistory = async ({fetch, agent = null, bustCache = true, mode = null, lang = null, fromDate = null, toDate = null, cities = []}) => {
     let fromDateStr = '';
     if (fromDate) {
@@ -31,7 +39,7 @@ const fetchAlertsByRange = async ({fetch, agent = null, bustCache = true, lang =
         fetch,
         agent,
         bustCache,
-        mode: 0,
+        mode: Modes.DateRange,
         lang,
         fromDate,
         toDate
@@ -43,7 +51,7 @@ const fetchAlertsLastMonth = async ({fetch, agent = null, bustCache = true, lang
         fetch,
         agent,
         bustCache,
-        mode: 3,
+        mode: Modes.LastMonth,
         lang,
         cities
     });
