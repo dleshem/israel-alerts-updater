@@ -1,10 +1,11 @@
+const Endpoint = 'https://alerts-history.oref.org.il/Shared/Ajax/';
+
 const Modes = {
     DateRange: 0,
     LastDay: 1,
     LastWeek: 2,
     LastMonth: 3
 };
-
 
 const getAlarmsHistory = async ({fetch, agent = null, bustCache = true, mode = null, lang = null, fromDate = null, toDate = null, cities = []}) => {
     let fromDateStr = '';
@@ -28,7 +29,7 @@ const getAlarmsHistory = async ({fetch, agent = null, bustCache = true, mode = n
     // We set a fictitious query parameter 't' to current timestamp to guarantee freshness (bust the cache)
     const bustCacheStr = bustCache ? `&t=${Date.now()}` : '';
     
-    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetAlarmsHistory.aspx?lang=${lang}&mode=${mode}&fromDate=${fromDateStr}&toDate=${toDateStr}${citiesStr}${bustCacheStr}`, {
+    const response = await fetch(`${Endpoint}GetAlarmsHistory.aspx?lang=${lang}&mode=${mode}&fromDate=${fromDateStr}&toDate=${toDateStr}${citiesStr}${bustCacheStr}`, {
         agent
     });
     return await response.json();
@@ -58,14 +59,14 @@ const fetchAlertsLastMonth = async ({fetch, agent = null, bustCache = true, lang
 };
 
 const getCitiesMix = async ({fetch, agent = null, lang = 'he'}) => {
-    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetCitiesMix.aspx?lang=${lang}&`, {
+    const response = await fetch(`${Endpoint}GetCitiesMix.aspx?lang=${lang}&`, {
         agent
     });
     return await response.json();
 };
 
 const getDistricts = async ({fetch, agent = null, lang = 'he'}) => {
-    const response = await fetch(`https://alerts-history.oref.org.il/Shared/Ajax/GetDistricts.aspx?lang=${lang}&`, {
+    const response = await fetch(`${Endpoint}GetDistricts.aspx?lang=${lang}&`, {
         agent
     });
     return await response.json();
