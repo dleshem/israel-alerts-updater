@@ -7,7 +7,7 @@ const Modes = {
     LastMonth: 3
 };
 
-const getAlarmsHistory = async ({fetch, agent = null, bustCache = true, mode = null, lang = null, fromDate = null, toDate = null, cities = []}) => {
+const getAlarmsHistory = async ({fetch, agent = null, bustCache = true, mode = null, lang = null, fromDate = null, toDate = null, cities = [], timeout = 20000}) => {
     let fromDateStr = '';
     if (fromDate) {
         const s = fromDate.toISOString();
@@ -30,12 +30,13 @@ const getAlarmsHistory = async ({fetch, agent = null, bustCache = true, mode = n
     const bustCacheStr = bustCache ? `&t=${Date.now()}` : '';
     
     const response = await fetch(`${Endpoint}GetAlarmsHistory.aspx?lang=${lang}&mode=${mode}&fromDate=${fromDateStr}&toDate=${toDateStr}${citiesStr}${bustCacheStr}`, {
-        agent
+        agent,
+        signal: AbortSignal.timeout(timeout)
     });
     return await response.json();
 };
 
-const fetchAlertsByRange = async ({fetch, agent = null, bustCache = true, lang = 'he', fromDate = null, toDate = null}) => {
+const fetchAlertsByRange = async ({fetch, agent = null, bustCache = true, lang = 'he', fromDate = null, toDate = null, timeout = 20000}) => {
     return getAlarmsHistory({
         fetch,
         agent,
@@ -43,31 +44,35 @@ const fetchAlertsByRange = async ({fetch, agent = null, bustCache = true, lang =
         mode: Modes.DateRange,
         lang,
         fromDate,
-        toDate
+        toDate,
+        timeout
     });
 };
 
-const fetchAlertsLastMonth = async ({fetch, agent = null, bustCache = true, lang = 'he', cities = []}) => {
+const fetchAlertsLastMonth = async ({fetch, agent = null, bustCache = true, lang = 'he', cities = [], timeout = 20000}) => {
     return getAlarmsHistory({
         fetch,
         agent,
         bustCache,
         mode: Modes.LastMonth,
         lang,
-        cities
+        cities,
+        timeout
     });
 };
 
-const getCitiesMix = async ({fetch, agent = null, lang = 'he'}) => {
+const getCitiesMix = async ({fetch, agent = null, lang = 'he', timeout = 20000}) => {
     const response = await fetch(`${Endpoint}GetCitiesMix.aspx?lang=${lang}&`, {
-        agent
+        agent,
+        signal: AbortSignal.timeout(timeout)
     });
     return await response.json();
 };
 
-const getDistricts = async ({fetch, agent = null, lang = 'he'}) => {
+const getDistricts = async ({fetch, agent = null, lang = 'he', timeout = 20000}) => {
     const response = await fetch(`${Endpoint}GetDistricts.aspx?lang=${lang}&`, {
-        agent
+        agent,
+        signal: AbortSignal.timeout(timeout)
     });
     return await response.json();
 };
