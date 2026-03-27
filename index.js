@@ -21,6 +21,25 @@ const author = {
 
 const israelAlertsCsvFilename = 'israel-alerts.csv';
 
+const fetchAlertsLastMonthWithRetries = async ({fetch, agent, city, retries}) => {
+    for (let retry = 0; retry < retries; ++retry) {
+        try {
+            console.log(`Fetching alerts for ${city}`);
+            const alerts = await fetchAlertsLastMonth({
+                fetch,
+                agent,
+                bustCache: true,
+                lang: 'he',
+                cities: [ city ]
+            });
+            return alerts;
+        } catch (e) {
+            console.log(`Error while fetching alerts for ${city}`);
+            console.log(e);
+        }
+    }
+};
+
 const fetchAllAlertsLastMonth = async (agent) => {
     const districts = await getDistricts({
         fetch,
@@ -30,18 +49,25 @@ const fetchAllAlertsLastMonth = async (agent) => {
     console.log(`Districts: ${districts.length}`);
 
     const alerts = [];
-    for (let i = 0; i < districts.length; ++i) {
-        const district = districts[i];
-    
-        try {
-            console.log(`Fetching alerts for ${district.label}`);
-            const districtAlerts = await fetchAlertsLastMonth({
-                fetch,
-                agent,
-                bustCache: true,
-                lang: 'he',
-                cities: [ district.label ]
-            });
+    const batchSize = 50;
+    for (let batch = 0; batch < Math.ceil(districts.length / batchSize); ++batch) {
+        const fetches = [];
+        for (let i = batch*batchSize; i < Math.min((batch+1)*batchSize, districts.length); ++i) {
+            const district = districts[i];
+        
+            if (district.label !== 'כל הארץ') {
+                fetches.push(fetchAlertsLastMonthWithRetries({
+                    fetch,
+                    agent,
+                    city: district.label,
+                    retries: 100
+                }));
+            }
+        }
+
+        const responses = await Promise.all(fetches);
+
+        _.each(responses, districtAlerts => {
             _.each(districtAlerts, alert => {
                 delete alert['NAME_AR'];
                 delete alert['NAME_EN'];
@@ -49,9 +75,7 @@ const fetchAllAlertsLastMonth = async (agent) => {
                 delete alert['NAME_RU'];
                 alerts.push(alert);
             });
-        } catch (e) {
-            console.log(e);
-        }
+        });
     }
 
     return alerts;
